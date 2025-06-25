@@ -1,0 +1,90 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Repositories\{{model}}Repository;
+use {{fqcn}};
+use Exception;
+use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
+
+class {{model}}Controller extends Controller
+{
+    /**
+     * @param {{model}}Repository ${{variable}}Repository
+     * @return void
+     */
+    public function __construct(private readonly {{model}}Repository ${{variable}}Repository)
+    {
+    }
+
+    /**
+     * @return JsonResponse
+     */
+    public function index(): JsonResponse
+    {
+        return response()->json($this->{{variable}}Repository->getAll());
+    }
+
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function store(Request $request): JsonResponse
+    {
+        // TODO: Add validation rules
+        $validatedData = $request->all();
+
+        try {
+            $created = $this->{{variable}}Repository->create($validatedData);
+            return response()->json($created, 201);
+        } catch (Exception $e) {
+            return response()->json(["message" => "Failed to create!"], 500);
+        }
+    }
+
+    /**
+     * @param int $id
+     * @return JsonResponse
+     */
+    public function show(int $id): JsonResponse
+    {
+        try {
+            return response()->json($this->{{variable}}Repository->getById($id));
+        } catch (Exception $e) {
+            return response()->json(["message" => "{{model}} not found with id: $id"], 404);
+        }
+    }
+
+    /**
+     * @param {{model}} ${{variable}}
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function update({{model}} ${{variable}}, Request $request): JsonResponse
+    {
+        // TODO: Add validation rules
+        $validatedData = $request->all();
+
+        try {
+            $updated = $this->{{variable}}Repository->update(${{variable}}->id, $validatedData);
+            return response()->json($updated, 200);
+        } catch (Exception $e) {
+            return response()->json(["message" => "Failed to update!"], 500);
+        }
+    }
+
+    /**
+     * @param {{model}} ${{variable}}
+     * @return JsonResponse
+     */
+    public function destroy({{model}} ${{variable}}): JsonResponse
+    {
+        try {
+            $this->{{variable}}Repository->delete(${{variable}}->id);
+            return response()->json([], 204);
+        } catch (Exception $e) {
+            return response()->json(["message" => "Failed to delete!"], 500);
+        }
+    }
+}

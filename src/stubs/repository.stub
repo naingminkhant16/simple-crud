@@ -1,0 +1,14 @@
+<?php
+
+namespace App\Repositories;
+
+use {{fqcn}};
+use NaingMinKhant\MyRepo\NmkRepository;
+
+class {{model}}Repository extends NmkRepository
+{
+    public function __construct()
+    {
+        parent::__construct({{model}}::class);
+    }
+}

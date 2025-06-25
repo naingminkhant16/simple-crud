@@ -1,0 +1,38 @@
+{
+  "name": "naingminkhant/simple-crud",
+  "description": "A Laravel package to auto-generate simple CRUD API (migration, model, controller, repository, route).",
+  "minimum-stability": "stable",
+  "prefer-stable": true,
+  "license": "proprietary",
+  "authors": [
+    {
+      "name": "naingminkhant",
+      "email": "tharkhant777@gmail.com"
+    }
+  ],
+  "require": {
+    "php": "^8.0",
+    "illuminate/support": "^9.0|^10.0|^11.0|^12.0",
+    "naingminkhant/myrepo": "^1.0.2"
+  },
+  "keywords": [
+    "laravel",
+    "crud",
+    "generator",
+    "artisan",
+    "command",
+    "api"
+  ],
+  "autoload": {
+    "psr-4": {
+      "NaingMinKhant\\SimpleCrud\\": "src/"
+    }
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "NaingMinKhant\\SimpleCrud\\SimpleCrudServiceProvider"
+      ]
+    }
+  }
+}

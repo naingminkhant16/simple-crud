@@ -10,7 +10,7 @@ class GenerateCrudCommand extends Command
     /**
      * The name and signature of the console command.
      */
-    protected $signature = 'simple-crud-api {model}';
+    protected $signature = 'simple-crud {model} {--api}';
 
     /**
      * The console command description.
@@ -25,17 +25,20 @@ class GenerateCrudCommand extends Command
     public function handle()
     {
         $model = $this->argument('model');
-        $generator = new ApiCrud($model, $this);
+        $isApi = $this->option('api');
+
+        $generator = ($isApi) ? new ApiCrud($model, $this) : new MvcCrud($model, $this);
+
         // Calling template method
         if ($generator->generate()) {
             $this->info("✅ CRUD generated successfully for model '{$model}'");
-            $this->info("- Migration created.");
-            $this->info("- Model created.");
-            $this->info("- Controller created.");
-            $this->info("- Repository created.");
-            $this->info("- Route added to routes/api.php");
+
+            // Create view files if it is not api
+            if (!$isApi) $generator->makeViewFiles();
+
             return self::SUCCESS;
         }
+
         return self::FAILURE;
     }
 }

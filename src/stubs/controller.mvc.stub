@@ -1,0 +1,91 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Repositories\{{model}}Repository;
+use {{fqcn}};
+use Illuminate\Http\Request;
+use Illuminate\View\View;
+use Illuminate\Http\RedirectResponse;
+
+class {{model}}Controller extends Controller
+{
+    /**
+     * @param {{model}}Repository ${{variable}}Repository
+     */
+    public function __construct(private readonly {{model}}Repository ${{variable}}Repository)
+    {
+    }
+
+    /**
+     * Display a listing of the resource.
+     * @return View
+     */
+    public function index(): View
+    {
+        $items = $this->{{variable}}Repository->getAll();
+        return view('{{viewFolder}}.index', compact('items'));
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     * @return View
+     */
+    public function create(): View
+    {
+        return view('{{viewFolder}}.create');
+    }
+
+    /**
+     * Store a new resource.
+     * @return RedirectResponse
+     */
+    public function store(Request $request): RedirectResponse
+    {
+        // TODO: Add validation rules
+        $validated = $request->all();
+
+        $this->{{variable}}Repository->create($validated);
+        return redirect()->route('{{routeName}}.index')->with('success', '{{model}} created successfully.');
+    }
+
+    /**
+     * Display the specific resource.
+     * @return View
+     */
+    public function show({{model}} ${{variable}}): View
+    {
+        return view('{{viewFolder}}.show', compact('{{variable}}'));
+    }
+
+    /**
+     * Form for editing the resource.
+     * @return View
+     */
+    public function edit({{model}} ${{variable}}): View
+    {
+        return view('{{viewFolder}}.edit', compact('{{variable}}'));
+    }
+
+    /**
+     * Update the specific resource
+     * @return RedirectResponse
+     */
+    public function update(Request $request, {{model}} ${{variable}}): RedirectResponse
+    {
+        // TODO: Add validation rules
+        $validated = $request->all();
+
+        $this->{{variable}}Repository->update(${{variable}}->id, $validated);
+        return redirect()->route('{{routeName}}.index')->with('success', '{{model}} updated successfully.');
+    }
+
+    /**
+     * Delete the specific resource
+     */
+    public function destroy({{model}} ${{variable}}): RedirectResponse
+    {
+        $this->{{variable}}Repository->delete(${{variable}}->id);
+        return redirect()->route('{{routeName}}.index')->with('success', '{{model}} deleted successfully.');
+    }
+}

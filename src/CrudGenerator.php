@@ -2,6 +2,7 @@
 
 namespace NaingMinKhant\SimpleCrud;
 
+use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
@@ -11,13 +12,16 @@ abstract class CrudGenerator
     protected string $model;
     protected string $modelPath;
     protected string $fqcn;
+    protected Command $command;
 
     /**
      * @param string $model
+     * @param Command $command
      */
-    public function __construct(string $model)
+    public function __construct(string $model, Command $command)
     {
         $this->model = $model;
+        $this->command = $command;
         $this->modelPath = app_path('Models/' . $model . '.php');
     }
 
@@ -74,6 +78,7 @@ abstract class CrudGenerator
     protected function makeMigration(): void
     {
         $migrationName = 'create_' . Str::snake(Str::pluralStudly($this->model)) . '_table';
+        $this->command->info("- Migration created.");
         Artisan::call('make:migration', ['name' => $migrationName]);
     }
 
@@ -85,6 +90,7 @@ abstract class CrudGenerator
     protected function makeModel(): void
     {
         Artisan::call('make:model', ['name' => $this->model]);
+        $this->command->info("- Model created.");
     }
 
     /**
@@ -136,11 +142,32 @@ abstract class CrudGenerator
      * Make repository file
      * @return void
      */
-    abstract protected function makeRepository(): void;
+    protected function makeRepository(): void
+    {
+        $class = class_basename($this->fqcn);
+        $repositoryPath = app_path("Repositories/{$class}Repository.php");
+
+        if (!File::exists(app_path("Repositories"))) {
+            File::makeDirectory(app_path("Repositories"), 0777, true);
+        }
+
+        if (File::exists($repositoryPath)) {
+            $this->error("Repository {$class}Repository already exists.");
+        }
+
+        $stub = File::get(__DIR__ . "/stubs/repository.stub");
+        $stub = str_replace(
+            ['{{model}}', '{{fqcn}}'],
+            [$class, $this->fqcn],
+            $stub
+        );
+
+        File::put($repositoryPath, $stub);
+        $this->command->info("- Repository created.");
+    }
 
     /**
-     * Step
-     * Make controller file
+     * Step implementation for making controller file
      * @return void
      */
     abstract protected function makeController(): void;
@@ -156,6 +183,10 @@ abstract class CrudGenerator
      * @param string $message
      * @return void
      */
-    abstract protected function error(string $message): void;
+    protected function error(string $message): void
+    {
+        $this->command->error($message);
+        exit($this->command::FAILURE);
+    }
 }
 

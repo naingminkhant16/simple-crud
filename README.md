@@ -35,5 +35,12 @@ It will create model, migration, MVC style controller, repository, append routes
 ```bash
 php artisan simple-crud {ModelName} --api
 ```
-It will generate all CRUD endpoints for provided model.
+It will generate all CRUD endpoints for provided model. 
+
+Developers only need to provide columns for migration file and run
+```bash
+php artisan migrate
+```
+
+You can now try testing by calling endpoints.
 
